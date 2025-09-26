@@ -1,3 +1,6 @@
+// Fix for "Cannot find name 'chrome'" error. This declares the chrome global for TypeScript.
+declare const chrome: any;
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { AnalysisReport, AnalysisType } from './types';
 import { analyzeContent } from './services/geminiService';
@@ -16,13 +19,20 @@ const App: React.FC = () => {
 
   // Effect for initial automatic scan on mount
   useEffect(() => {
-    const initialScan = async () => {
+    // Check if running as a Chrome extension
+    if (typeof chrome === 'undefined' || !chrome.tabs) {
+      setError("This doesn't seem to be running in a Chrome extension. Please use manual analysis.");
+      setIsLoading(false);
+      setShowInput(true);
+      return;
+    }
+
+    const initialScan = async (url: string) => {
       setIsLoading(true);
       setError(null);
       setAnalysisReport(null);
       try {
-        // Simulate analyzing the current tab by using a known safe URL
-        const report = await analyzeContent(AnalysisType.URL, 'https://www.google.com');
+        const report = await analyzeContent(AnalysisType.URL, url);
         setAnalysisReport(report);
       } catch (err) {
         if (err instanceof Error) {
@@ -32,11 +42,21 @@ const App: React.FC = () => {
         }
       } finally {
         setIsLoading(false);
-        setShowInput(true); // Show the input form after the initial scan is complete
+        setShowInput(true);
       }
     };
 
-    initialScan();
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const currentTab = tabs[0];
+      // Check for a valid, analyzable URL (http or https)
+      if (currentTab && currentTab.url && (currentTab.url.startsWith('http://') || currentTab.url.startsWith('https://'))) {
+        initialScan(currentTab.url);
+      } else {
+        // No analyzable URL (e.g., newtab, settings), just show the input form.
+        setIsLoading(false);
+        setShowInput(true);
+      }
+    });
   }, []); // Empty array ensures this runs only once on mount
 
   const handleManualAnalyze = useCallback(async () => {
@@ -61,9 +81,9 @@ const App: React.FC = () => {
   }, [analysisType, inputValue]);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen bg-gray-900 text-gray-100 w-[500px]">
       <Header />
-      <main className="container mx-auto px-4 py-8 sm:py-12">
+      <main className="px-6 py-8">
         <div className="space-y-8">
           {showInput && (
             <InputForm
@@ -76,18 +96,18 @@ const App: React.FC = () => {
               inputValue={inputValue}
               setInputValue={setInputValue}
               handleAnalyze={handleManualAnalyze}
-              isLoading={isLoading}
+              isLoading={isLoading && showInput} // Pass loading state only for manual analysis
             />
           )}
 
-          {isLoading && (
+          {isLoading && !analysisReport && (
             <AnalysisInProgress
-              title={!showInput ? "Automatically Analyzing Current Tab..." : "Analysis in Progress"}
+              title={!showInput ? "Analyzing Current Tab..." : "Analysis in Progress"}
             />
           )}
 
           {error && (
-            <div className="w-full max-w-3xl mx-auto bg-red-900/50 border border-red-700/60 rounded-lg p-4 text-center text-red-300">
+            <div className="w-full bg-red-900/50 border border-red-700/60 rounded-lg p-4 text-center text-red-300">
               <p className="font-semibold">Analysis Failed</p>
               <p className="text-sm">{error}</p>
             </div>
@@ -97,7 +117,7 @@ const App: React.FC = () => {
         </div>
       </main>
         <footer className="text-center py-6 text-gray-500 text-sm">
-            <p>Powered by Gemini. Ctrl Alt Defeat ! is for informational purposes only.</p>
+            <p>Powered by Gemini. TrapShield is for informational purposes only.</p>
         </footer>
     </div>
   );

@@ -41,7 +41,7 @@ export const analyzeContent = async (
     content: string
 ): Promise<AnalysisReport> => {
     const systemInstruction = `
-        You are Ctrl Alt Defeat, an advanced AI-powered phishing detection framework. Your task is to analyze the provided content and return a detailed security analysis in the specified JSON format. 
+        You are TrapShield, an advanced AI-powered phishing detection framework. Your task is to analyze the provided content and return a detailed security analysis in the specified JSON format. 
         Your analysis should be comprehensive, covering textual, structural, and reputational aspects.
         - If the type is URL, analyze the URL structure and infer potential textual content that might be on the page. 
         - If the type is TEXT, analyze the language, links, and overall message. 

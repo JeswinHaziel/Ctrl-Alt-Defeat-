@@ -22,7 +22,7 @@ const InputForm: React.FC<InputFormProps> = ({
   const isUrl = analysisType === AnalysisType.URL;
 
   return (
-    <div className="w-full max-w-3xl mx-auto bg-gray-800/50 rounded-lg p-6 border border-gray-700/60 shadow-lg">
+    <div className="w-full bg-gray-800/50 rounded-lg p-6 border border-gray-700/60 shadow-lg">
       <div className="flex border-b border-gray-700 mb-4">
         <button
           onClick={() => setAnalysisType(AnalysisType.URL)}

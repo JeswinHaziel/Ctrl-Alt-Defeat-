@@ -26,7 +26,7 @@ const AnalysisInProgress: React.FC<AnalysisInProgressProps> = ({ title = "Analys
   }, []);
 
   return (
-    <div className="w-full max-w-3xl mx-auto bg-gray-800/50 rounded-lg p-6 border border-gray-700/60 shadow-lg text-center">
+    <div className="w-full bg-gray-800/50 rounded-lg p-6 border border-gray-700/60 shadow-lg text-center">
         <div className="flex justify-center items-center mb-4">
             <svg className="animate-spin h-8 w-8 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

@@ -1,5 +1,13 @@
 {
+  "manifest_version": 3,
   "name": "TrapShield",
   "description": "An AI-powered security framework to automatically detect and defeat phishing threats. Analyze your current tab, URLs, and text content in real-time.",
-  "requestFramePermissions": []
+  "version": "1.0",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "TrapShield"
+  },
+  "permissions": [
+    "activeTab"
+  ]
 }

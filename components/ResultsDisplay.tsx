@@ -45,7 +45,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ report }) => {
   const currentVerdict = verdictConfig[verdict];
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6 animate-fade-in">
+    <div className="w-full space-y-6 animate-fade-in">
       {/* Verdict Header */}
       <div className={`rounded-lg p-6 border ${currentVerdict.bgColor} ${currentVerdict.borderColor}`}>
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
